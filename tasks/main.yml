@@ -1,0 +1,60 @@
+---
+
+- block:
+
+  - name: "set timezone"
+    timezone:
+      name: "{{ timezone }}"
+
+  - name: "set name"
+    hostname:
+      name: "{{ inventory_hostname }}"
+
+  - name: "disable password auth for SSH"
+    lineinfile:
+      path: "/etc/ssh/sshd_config"
+      line: "PasswordAuthentication no"
+    notify:
+      - "Restart SSH"
+
+  - name: "write /etc/gitconfig"
+    template:
+      src: "gitconfig.j2"
+      dest: "/etc/gitconfig"
+
+  - name: "ensure aptitude is installed"
+    apt:
+      name: aptitude
+      state: present
+
+  - name: "update installed packages"
+    apt:
+      upgrade: safe
+      update_cache: yes
+
+  - name: "install common packages"
+    apt:
+      pkg:
+        - "sudo"
+        - "curl"
+        - "bzip2"
+        - "zip"
+        - "unzip"
+        - "xz-utils"
+        - "vim"
+        - "wget"
+        - "mc"
+        - "lsof"
+        - "pv"
+        - "dnsutils"
+        - "tig"
+        - "etckeeper"
+        - "tcpdump"
+
+  - shell: "etckeeper init"
+    args:
+      creates: "/etc/.git"
+
+  become: true
+  tags:
+    - "base"
