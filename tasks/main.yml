@@ -17,6 +17,14 @@
     notify:
       - "Restart SSH"
 
+  - name: "copy shared profile setup files"
+    copy:
+      src: "profile.d"
+      dest: "/etc"
+      owner: "root"
+      group: "root"
+      force: yes
+
   - name: "write /etc/gitconfig"
     template:
       src: "gitconfig.j2"
