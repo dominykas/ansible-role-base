@@ -64,5 +64,6 @@
       creates: "/etc/.git"
 
   become: true
+  become_method: su
   tags:
     - "gnar-base"
